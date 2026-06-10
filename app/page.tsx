@@ -1,17 +1,10 @@
 import CountryList from "@/components/CountryList";
 import SearchBar from "@/components/SearchBar";
 import { getAllCountries } from "@/lib/api";
-import { filterCountries } from "@/lib/countries";
 import { Suspense } from "react";
 
-interface HomePageProps {
-  searchParams: { query?: string };
-}
-
-export default async function HomePage({ searchParams }: HomePageProps) {
-  const query = searchParams.query?.toLowerCase().trim() ?? "";
+export default async function HomePage() {
   const allCountries = await getAllCountries();
-  const initialCountries = filterCountries(allCountries, query);
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8">
@@ -23,7 +16,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         fallback={<p className="text-sm text-gray-500">Loading search…</p>}
       >
         <SearchBar />
-        <CountryList initialCountries={initialCountries} initialQuery={query} />
+        <CountryList initialCountries={allCountries} />
       </Suspense>
     </div>
   );

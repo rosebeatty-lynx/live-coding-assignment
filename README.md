@@ -66,14 +66,3 @@ Use Tailwind on the existing classes.
 - Return a **normalized** `query` (lowercase, trimmed) for filtering, and the raw `inputValue` for the controlled input.
 
 Refactor `SearchBar` to use the hook (remove inline `useRouter` / `useSearchParams` logic).
-
-**Filter the list** — `CountryList` already uses React Query with `countryKeys.all` and returns **all** countries. Wire search so the grid updates when `?query=` changes **without a full page reload**.
-
-You can:
-
-- **Use React Query** — e.g. `countryKeys.list(query)`, filter inside the existing `queryFn`.
-- **Use any another approach**
-
-Use `useSearchQuery` in **both** `SearchBar` and `CountryList`.
-
----

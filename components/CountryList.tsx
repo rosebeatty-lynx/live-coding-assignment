@@ -1,34 +1,30 @@
 "use client";
 
+import { useMemo } from "react";
 import CountryCard from "@/components/CountryCard";
 import { getAllCountries } from "@/lib/api";
+import { filterCountries } from "@/lib/countries";
 import { countryKeys } from "@/lib/query-keys";
 import type { Country } from "@/types";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 
 interface CountryListProps {
-  initialCountries: Country[];
-  initialQuery: string;
+  initialCountries: Country[]; // full list, not pre-filtered
 }
 
-export default function CountryList({
-  initialCountries: initialCountries,
-  initialQuery: _initialQuery,
-}: CountryListProps) {
-  const queryClient = useQueryClient();
+export default function CountryList({ initialCountries }: CountryListProps) {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query")?.toLowerCase().trim() ?? "";
 
-  const { data: countries = [] } = useQuery({
+  const { data: allCountries = [] } = useQuery({
     queryKey: countryKeys.all,
-    queryFn: async () => {
-      const allCountries = await queryClient.ensureQueryData({
-        queryKey: countryKeys.all,
-        queryFn: getAllCountries,
-        staleTime: 60 * 60 * 1000,
-      });
-      return allCountries;
-    },
+    queryFn: getAllCountries,
+    staleTime: 60 * 60 * 1000,
     initialData: initialCountries,
   });
+
+  const countries = useMemo(() => filterCountries(allCountries, query), [allCountries, query]);
 
   return (
     <>
