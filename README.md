@@ -1,6 +1,6 @@
 # Country Browser — Your tasks
 
-Build a country browser with search and detail pages using Next.js, React Query, and the [REST Countries API](https://restcountries.com/v3.1).
+Build a country browser with search and detail pages using Next.js, React Query
 
 **Time:** ~20 minutes
 
@@ -33,9 +33,7 @@ The list already renders cards; you only need to wire navigation.
 
 ---
 
-### 2. Country detail — `lib/api.ts` + `app/country/[code]/page.tsx`
-
-**API** — Implement `getCountryByCode(code)` in `lib/api.ts` as described in the file comments. Throw if the request fails.
+### 2. Country detail —  `app/country/[code]/page.tsx`
 
 **Page** — Build a simple detail view:
 

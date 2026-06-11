@@ -1,27 +1,28 @@
 import type { Country } from "@/types";
+import countriesData from "@/lib/data/countries.json";
 
-const BASE_URL = "https://restcountries.com/v3.1";
+// Bundled, offline country dataset — generated from the `world-countries`
+// dataset (the same upstream data REST Countries serves) plus population
+// figures, with flag images served by flagcdn.com (keyed by ISO alpha-2).
+//
+// This is the source of truth so the app never depends on REST Countries'
+// uptime. The previous live-fetch version 500'd whenever that free API went
+// down (502/Bad Gateway) or returned a non-array error body.
+const ALL_COUNTRIES = countriesData as Country[];
 
 export async function getAllCountries(): Promise<Country[]> {
-  const res = await fetch(
-    `${BASE_URL}/all?fields=cca3,name,flags,region,population,capital`,
-    {
-      next: { revalidate: 3600 },
-    },
-  );
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch countries");
-  }
-
-  const data: Country[] = await res.json();
-  return data.sort((a, b) => a.name.common.localeCompare(b.name.common));
+  // Already sorted by common name at build time. Returned as a fresh array
+  // so callers can sort/filter without mutating the shared module data.
+  return [...ALL_COUNTRIES];
 }
 
 export async function getCountryByCode(code: string): Promise<Country> {
-  // REST Countries — lookup by ISO 3166-1 alpha-3 code (e.g. "USA", "BRA"):
-  //   GET https://restcountries.com/v3.1/alpha/{code}
-  // Response: JSON array with one Country object — return the first element.
+  const normalized = code.toUpperCase();
+  const match = ALL_COUNTRIES.find((c) => c.cca3.toUpperCase() === normalized);
 
-  throw new Error("getCountryByCode is not implemented");
+  if (!match) {
+    throw new Error(`No country found for code "${code}"`);
+  }
+
+  return match;
 }
