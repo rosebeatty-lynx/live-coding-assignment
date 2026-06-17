@@ -4,7 +4,7 @@ interface CountryPageProps {
   params: { code: string };
 }
 
-export default function CountryPage({ params }: CountryPageProps) {
+export default async function CountryPage({ params }: CountryPageProps) {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6 py-8">
       <Link href="/" className="text-sm text-blue-500 hover:underline">
